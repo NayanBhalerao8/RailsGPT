@@ -1,8 +1,8 @@
 namespace :docs do
   desc "Generate documentation for all models"
-  task :models => :environment do
+  task models: :environment do
     doc_service = Llm::DocumentationService.new
-    output_dir = Rails.root.join('docs', 'models')
+    output_dir = Rails.root.join("docs", "models")
     FileUtils.mkdir_p(output_dir)
 
     Rails.application.eager_load!
@@ -21,9 +21,9 @@ namespace :docs do
   end
 
   desc "Generate documentation for all controllers"
-  task :controllers => :environment do
+  task controllers: :environment do
     doc_service = Llm::DocumentationService.new
-    output_dir = Rails.root.join('docs', 'controllers')
+    output_dir = Rails.root.join("docs", "controllers")
     FileUtils.mkdir_p(output_dir)
 
     Rails.application.eager_load!
@@ -42,9 +42,9 @@ namespace :docs do
   end
 
   desc "Generate API documentation for all controllers"
-  task :api => :environment do
+  task api: :environment do
     doc_service = Llm::DocumentationService.new
-    output_dir = Rails.root.join('docs', 'api')
+    output_dir = Rails.root.join("docs", "api")
     FileUtils.mkdir_p(output_dir)
 
     Rails.application.eager_load!
@@ -63,7 +63,7 @@ namespace :docs do
   end
 
   desc "Add comments to a specific file"
-  task :comment, [:file_path] => :environment do |t, args|
+  task :comment, [ :file_path ] => :environment do |t, args|
     if args[:file_path].blank?
       puts "Please provide a file path: rake docs:comment[path/to/file.rb]"
       exit 1
@@ -77,7 +77,7 @@ namespace :docs do
 
     doc_service = Llm::DocumentationService.new
     code = File.read(file_path)
-    language = File.extname(file_path).delete('.')
+    language = File.extname(file_path).delete(".")
 
     puts "Adding comments to #{file_path}..."
     begin
@@ -90,5 +90,5 @@ namespace :docs do
   end
 
   desc "Generate all documentation"
-  task :all => [:models, :controllers, :api]
-end 
+  task all: [ :models, :controllers, :api ]
+end

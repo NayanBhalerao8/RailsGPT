@@ -1,4 +1,4 @@
-require 'open-uri'
+require "open-uri"
 class BlogPost < ApplicationRecord
     has_one_attached :image
 
@@ -15,9 +15,9 @@ class BlogPost < ApplicationRecord
         # First summarize the content
         summarized_content = Llm::ContentSummarizerService.new.summarize(self.content)
         Rails.logger.info "📝 Summarized content: #{summarized_content}"
-        
+
         # binding.pry
-        
+
         # Generate image using the summarized content
         image_url = Llm::DalleService.new.generate_image("An artistic image representing: #{summarized_content}")
         Rails.logger.info "🖼️ Generated image URL: #{image_url}"
