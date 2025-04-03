@@ -1,0 +1,18 @@
+<div id="<%= dom_id blog_post %>">
+  <p>
+    <strong>Title:</strong>
+    <%= blog_post.title %>
+  </p>
+
+  <p>
+    <strong>Content:</strong>
+    <%= blog_post.content %>
+  </p>
+
+  <% if blog_post&.image&.attached? %>
+    <%= image_tag blog_post.image, width: 500, height: 500, style: "border-radius: 10px;" %>
+  <% else %>
+    <p>Generating AI Image...</p>
+  <% end %>
+
+</div>
