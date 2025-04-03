@@ -15,7 +15,6 @@ class BlogPostsTest < ApplicationSystemTestCase
     click_on "New blog post"
 
     fill_in "Content", with: @blog_post.content
-    fill_in "Image", with: @blog_post.image
     fill_in "Title", with: @blog_post.title
     click_on "Create Blog post"
 
@@ -28,7 +27,6 @@ class BlogPostsTest < ApplicationSystemTestCase
     click_on "Edit this blog post", match: :first
 
     fill_in "Content", with: @blog_post.content
-    fill_in "Image", with: @blog_post.image
     fill_in "Title", with: @blog_post.title
     click_on "Update Blog post"
 

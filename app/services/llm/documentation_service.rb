@@ -5,8 +5,8 @@ module Llm
       super(@api_key)
       @base_url = "https://api.openai.com/v1/chat/completions"
       @headers = {
-        'Content-Type' => 'application/json',
-        'Authorization' => "Bearer #{@api_key}"
+        "Content-Type" => "application/json",
+        "Authorization" => "Bearer #{@api_key}"
       }
     end
 
@@ -21,7 +21,7 @@ module Llm
         4. Callbacks
         5. Important methods
         6. Usage examples
-        
+
         Code to analyze:
         #{code}
       PROMPT
@@ -40,7 +40,7 @@ module Llm
         4. Response formats
         5. Authentication/Authorization requirements
         6. Usage examples
-        
+
         Code to analyze:
         #{code}
       PROMPT
@@ -59,7 +59,7 @@ module Llm
         4. Response schemas
         5. Authentication requirements
         6. Example requests and responses
-        
+
         Code to analyze:
         #{code}
       PROMPT
@@ -67,7 +67,7 @@ module Llm
       generate_documentation(prompt)
     end
 
-    def add_code_comments(code, language = 'ruby')
+    def add_code_comments(code, language = "ruby")
       prompt = <<~PROMPT
         Add clear and meaningful comments to this #{language} code.
         Follow these guidelines:
@@ -75,7 +75,7 @@ module Llm
         2. Explain complex logic
         3. Document important variables
         4. Keep comments concise and professional
-        
+
         Code to comment:
         #{code}
       PROMPT
@@ -86,12 +86,12 @@ module Llm
     private
 
     def read_model_code(model_class)
-      file_path = Rails.root.join('app', 'models', "#{model_class.name.underscore}.rb")
+      file_path = Rails.root.join("app", "models", "#{model_class.name.underscore}.rb")
       File.read(file_path)
     end
 
     def read_controller_code(controller_class)
-      file_path = Rails.root.join('app', 'controllers', "#{controller_class.name.underscore}.rb")
+      file_path = Rails.root.join("app", "controllers", "#{controller_class.name.underscore}.rb")
       File.read(file_path)
     end
 
@@ -141,7 +141,7 @@ module Llm
     end
 
     def default_api_key
-      ENV['OPENAI_API_KEY']
+      ENV["OPENAI_API_KEY"]
     end
   end
-end 
+end
