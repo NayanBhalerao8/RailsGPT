@@ -13,9 +13,9 @@ module Llm
         }
       end
   
-      def generate_image(prompt, size = "1024x1024")
+      def generate_image(prompt, size = "1792x1024")
         body = {
-          model: "dall-e-2",  # Use DALL·E 2 for the cheapest option
+          model: "dall-e-3",  # Use DALL·E 2 for the cheapest option
           prompt: prompt,
           n: 1,
           size: size

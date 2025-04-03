@@ -50,6 +50,7 @@ group :development, :test do
   # gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"
   gem "debug", platforms: %i[ mri mswin mswin64 mingw x64_mingw ], require: "debug/prelude"
 
+  gem 'dotenv-rails', '~> 3.1', '>= 3.1.4'
   # Static analysis for security vulnerabilities [https://brakemanscanner.org/]
   gem "brakeman", require: false
 
