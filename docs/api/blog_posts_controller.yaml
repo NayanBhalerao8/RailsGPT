@@ -1,0 +1,182 @@
+Below is the OpenAPI (Swagger) documentation in YAML format for the provided Rails controller code. This documentation includes paths, HTTP methods, request parameters, response schemas, authentication requirements, and example requests/responses.
+
+```yaml
+openapi: 3.0.0
+info:
+  title: BlogPosts API
+  description: API for managing blog posts
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:3000
+
+paths:
+  /blog_posts:
+    get:
+      summary: List all blog posts
+      operationId: getBlogPosts
+      responses:
+        '200':
+          description: A list of blog posts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BlogPost'
+        
+    post:
+      summary: Create a new blog post
+      operationId: createBlogPost
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BlogPostInput'
+      responses:
+        '201':
+          description: Blog post created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BlogPost'
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /blog_posts/{id}:
+    get:
+      summary: Get a specific blog post
+      operationId: getBlogPost
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the blog post
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: A single blog post
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BlogPost'
+        '404':
+          description: Blog post not found
+
+    patch:
+      summary: Update a specific blog post
+      operationId: updateBlogPost
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the blog post
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BlogPostInput'
+      responses:
+        '200':
+          description: Blog post updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BlogPost'
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    
+    delete:
+      summary: Delete a specific blog post
+      operationId: deleteBlogPost
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the blog post
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Blog post deleted successfully
+        '404':
+          description: Blog post not found
+
+components:
+  schemas:
+    BlogPost:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        content:
+          type: string
+      required:
+        - id
+        - title
+        - content
+      
+    BlogPostInput:
+      type: object
+      properties:
+        blog_post:
+          type: object
+          properties:
+            title:
+              type: string
+            content:
+              type: string
+          required:
+            - title
+            - content
+
+    Error:
+      type: object
+      properties:
+        errors:
+          type: object
+          additionalProperties:
+            type: string
+
+```
+
+### Summary of the Documentation
+1. **Paths**:
+   - `/blog_posts` for listing and creating blog posts
+   - `/blog_posts/{id}` for retrieving, updating, and deleting individual blog posts
+
+2. **HTTP Methods**:
+   - GET for retrieving blog posts
+   - POST for creating a new blog post
+   - PATCH for updating an existing blog post
+   - DELETE for removing a blog post
+
+3. **Request Parameters**:
+   - Path parameter `id` for operations on individual blog posts
+   - Request body for creating and updating blog posts
+
+4. **Response Schemas**:
+   - Defined schemas for BlogPost (for the data structure) and Error (for validation errors)
+
+5. **Authentication**:
+   - The example does not specify authentication; you should extend the security section as needed.
+
+6. **Example Requests and Responses**:
+   - Included example structures for input and output through the schemas defined, which can be filled as needed for more clarity. 
+
+Please adapt the authentication section based on your specific requirements, as they were not included in the provided code.
