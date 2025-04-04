@@ -2,3 +2,4 @@
 import "@hotwired/turbo-rails"
 import "controllers"
 import "stackedit_integration"
+import "ai_commentary"
