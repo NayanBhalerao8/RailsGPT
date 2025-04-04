@@ -20,17 +20,65 @@
     <%= form.label :content, style: "display: block" %>
     <div class="content-editor-container">
       <%= form.text_area :content, style: "width: 100%; height: 200px;", class: "markdown-content" %>
-      <button type="button" id="open_stackedit" class="stackedit-button" style="margin-top: 10px; padding: 8px 16px; background-color: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer;">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-markdown" viewBox="0 0 16 16" style="vertical-align: text-bottom; margin-right: 5px;">
-          <path d="M14 3a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h12zM2 2a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H2z"/>
-          <path d="M9.146 8.146a.5.5 0 0 1 .708 0L11.5 9.793l1.646-1.647a.5.5 0 0 1 .708.708l-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 0 1 0-.708z"/>
-          <path d="M11.5 5a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-1 0v-4a.5.5 0 0 1 .5-.5z"/>
-        </svg>
-        Open in StackEdit
-      </button>
-      <p class="markdown-hint" style="margin-top: 5px; font-size: 0.85em; color: #666;">
-        This editor supports Markdown formatting. Click the button above to open the StackEdit editor.
+      
+      <!-- Editor Mode Toggle -->
+      <div class="editor-mode-toggle" style="margin-top: 10px; display: flex; align-items: center;">
+        <span style="margin-right: 10px; font-size: 0.9em; color: #666;">Editor Mode:</span>
+        <div class="toggle-buttons" style="display: flex; overflow: hidden; border-radius: 4px; border: 1px solid #ccc;">
+          <button type="button" id="mode_standard" class="mode-button active" style="padding: 6px 12px; background-color: #f0f0f0; border: none; cursor: pointer; flex: 1;">
+            Standard Editor
+          </button>
+          <button type="button" id="mode_enhanced" class="mode-button" style="padding: 6px 12px; background-color: #fff; border: none; cursor: pointer; flex: 1; border-left: 1px solid #ccc;">
+            Enhanced Editor
+          </button>
+        </div>
+      </div>
+      
+      <!-- Standard Mode Buttons -->
+      <div id="standard_mode_buttons" class="button-group" style="display: flex; gap: 10px; margin-top: 10px;">
+        <button type="button" id="generate_commentary" class="commentary-button" style="padding: 8px 16px; background-color: #2196F3; color: white; border: none; border-radius: 4px; cursor: pointer;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-lightbulb" viewBox="0 0 16 16" style="vertical-align: text-bottom; margin-right: 5px;">
+            <path d="M8 1a4 4 0 0 1 4 4c0 1.628-.79 2.99-2.13 3.8-.41.24-.83.48-1.13.69l-.29.18V10h-1V9.67l-.29-.18c-.3-.21-.72-.45-1.13-.69C5.79 7.99 5 6.628 5 5a4 4 0 0 1 4-4m0-1a5 5 0 0 0-5 5c0 2.136 1.078 3.802 2.618 4.797.52.331 1.055.667 1.44.911.385.244.648.43.782.54.134.11.232.194.288.253a.5.5 0 0 0 .745 0c.057-.059.154-.143.288-.253.134-.11.397-.296.782-.54.385-.244.92-.58 1.44-.911C12.922 8.802 14 7.136 14 5a5 5 0 0 0-5-5"/>
+          </svg>
+          Get AI Feedback
+        </button>
+      </div>
+      
+      <!-- Enhanced Mode Buttons -->
+      <div id="enhanced_mode_buttons" class="button-group" style="display: none; gap: 10px; margin-top: 10px;">
+        <button type="button" id="open_stackedit" class="stackedit-button" style="padding: 8px 16px; background-color: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-markdown" viewBox="0 0 16 16" style="vertical-align: text-bottom; margin-right: 5px;">
+            <path d="M14 3a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h12zM2 2a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H2z"/>
+            <path d="M9.146 8.146a.5.5 0 0 1 .708 0L11.5 9.793l1.646-1.647a.5.5 0 0 1 .708.708l-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 0 1 0-.708z"/>
+            <path d="M11.5 5a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-1 0v-4a.5.5 0 0 1 .5-.5z"/>
+          </svg>
+          Open in StackEdit
+        </button>
+      </div>
+      
+      <p id="editor_hint" class="markdown-hint" style="margin-top: 5px; font-size: 0.85em; color: #666;">
+        Standard mode with real-time AI grammar feedback. Switch to Enhanced mode to use StackEdit for rich Markdown editing.
       </p>
+      
+      <div id="ai-commentary-container" style="display: none; margin-top: 15px; padding: 15px; background-color: #f8f9fa; border-left: 4px solid #2196F3; border-radius: 4px;">
+        <h4 style="margin-top: 0; color: #2196F3; display: flex; align-items: center;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-robot" viewBox="0 0 16 16" style="margin-right: 8px;">
+            <path d="M6 12.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5ZM3 8.062C3 6.76 4.235 5.765 5.53 5.886a26.58 26.58 0 0 0 4.94 0C11.765 5.765 13 6.76 13 8.062v1.157a.933.933 0 0 1-.765.935c-.845.147-2.34.346-4.235.346-1.895 0-3.39-.2-4.235-.346A.933.933 0 0 1 3 9.219V8.062Zm4.542-.827a.25.25 0 0 0-.217.068l-.92.9a24.767 24.767 0 0 1-1.871-.183.25.25 0 0 0-.068.495c.55.076 1.232.149 2.02.193a.25.25 0 0 0 .189-.071l.754-.736.847 1.71a.25.25 0 0 0 .404.062l.932-.97a25.286 25.286 0 0 0 1.922-.188.25.25 0 0 0-.068-.495c-.538.074-1.207.145-1.98.189a.25.25 0 0 0-.166.076l-.754.785-.842-1.7a.25.25 0 0 0-.182-.135Z"/>
+            <path d="M8.5 1.866a1 1 0 1 0-1 0V3h-2A4.5 4.5 0 0 0 1 7.5V8a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1v1a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-1a1 1 0 0 0 1-1V9a1 1 0 0 0-1-1v-.5A4.5 4.5 0 0 0 10.5 3h-2V1.866ZM14 7.5V13a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V7.5A3.5 3.5 0 0 1 5.5 4h5A3.5 3.5 0 0 1 14 7.5Z"/>
+          </svg>
+          AI Writing Feedback
+        </h4>
+        <div id="ai-commentary-content" style="font-size: 0.95em;">Click "Get AI Feedback" to receive suggestions on your content.</div>
+        <div id="ai-commentary-loading" style="display: none; margin-top: 10px; font-size: 0.9em; color: #666;">
+          <div class="spinner" style="display: inline-block; width: 16px; height: 16px; border: 2px solid rgba(0, 0, 0, 0.1); border-top-color: #2196F3; border-radius: 50%; animation: spin 1s linear infinite; margin-right: 8px;"></div>
+          Generating feedback...
+        </div>
+      </div>
+      <style>
+        @keyframes spin {
+          to { transform: rotate(360deg); }
+        }
+      </style>
     </div>
   </div>
 

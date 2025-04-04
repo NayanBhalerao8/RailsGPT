@@ -1,11 +1,76 @@
 // AI Commentary integration for blog content with streaming support
 document.addEventListener('turbo:load', function() {
   initAiCommentary();
+  initEditorModeToggle();
 });
 
 document.addEventListener('DOMContentLoaded', function() {
   initAiCommentary();
+  initEditorModeToggle();
 });
+
+// Handle toggling between Standard and Enhanced editor modes
+function initEditorModeToggle() {
+  console.log('Initializing editor mode toggle');
+  
+  const modeStandardButton = document.getElementById('mode_standard');
+  const modeEnhancedButton = document.getElementById('mode_enhanced');
+  const standardModeButtons = document.getElementById('standard_mode_buttons');
+  const enhancedModeButtons = document.getElementById('enhanced_mode_buttons');
+  const aiCommentaryContainer = document.getElementById('ai-commentary-container');
+  const editorHint = document.getElementById('editor_hint');
+  
+  if (modeStandardButton && modeEnhancedButton) {
+    // Standard Mode (AI Commentary)
+    modeStandardButton.addEventListener('click', function() {
+      // Update button styles
+      modeStandardButton.classList.add('active');
+      modeStandardButton.style.backgroundColor = '#f0f0f0';
+      modeEnhancedButton.classList.remove('active');
+      modeEnhancedButton.style.backgroundColor = '#fff';
+      
+      // Show/hide appropriate buttons
+      standardModeButtons.style.display = 'flex';
+      enhancedModeButtons.style.display = 'none';
+      
+      // Update hint text
+      editorHint.textContent = 'Standard mode with real-time AI grammar feedback. Switch to Enhanced mode to use StackEdit for rich Markdown editing.';
+      
+      // Close any active EventSource connections
+      if (window.activeStream) {
+        window.activeStream.close();
+        window.activeStream = null;
+      }
+    });
+    
+    // Enhanced Mode (StackEdit)
+    modeEnhancedButton.addEventListener('click', function() {
+      // Update button styles
+      modeEnhancedButton.classList.add('active');
+      modeEnhancedButton.style.backgroundColor = '#f0f0f0';
+      modeStandardButton.classList.remove('active');
+      modeStandardButton.style.backgroundColor = '#fff';
+      
+      // Show/hide appropriate buttons
+      standardModeButtons.style.display = 'none';
+      enhancedModeButtons.style.display = 'flex';
+      
+      // Hide AI commentary when switching to enhanced mode
+      aiCommentaryContainer.style.display = 'none';
+      
+      // Update hint text
+      editorHint.textContent = 'Enhanced mode with StackEdit Markdown editor. Switch to Standard mode for real-time AI grammar feedback.';
+      
+      // Close any active EventSource connections
+      if (window.activeStream) {
+        window.activeStream.close();
+        window.activeStream = null;
+      }
+    });
+  } else {
+    console.log('Editor mode toggle elements not found');
+  }
+}
 
 function initAiCommentary() {
   console.log('Initializing AI Commentary integration with streaming');
@@ -16,8 +81,8 @@ function initAiCommentary() {
   const commentaryContent = document.getElementById('ai-commentary-content');
   const commentaryLoading = document.getElementById('ai-commentary-loading');
   
-  // Track if we have an active stream
-  let activeStream = null;
+  // Track if we have an active stream - make it accessible globally
+  window.activeStream = window.activeStream || null;
   
   if (contentTextarea && generateCommentaryButton && commentaryContainer && commentaryContent) {
     console.log('Found AI commentary elements, setting up event listeners');
@@ -99,17 +164,17 @@ function initAiCommentary() {
       
       // Create a new EventSource for streaming
       const encodedContent = encodeURIComponent(content);
-      activeStream = new EventSource(`/blog_posts/stream_commentary?content=${encodedContent}`);
+      window.activeStream = new EventSource(`/blog_posts/stream_commentary?content=${encodedContent}`);
       
       // Handle incoming messages
-      activeStream.onmessage = function(event) {
+      window.activeStream.onmessage = function(event) {
         // Hide loading state once we start receiving data
         commentaryLoading.style.display = 'none';
         
         if (event.data === '[DONE]') {
           // Stream is complete
-          activeStream.close();
-          activeStream = null;
+          window.activeStream.close();
+          window.activeStream = null;
           return;
         }
         
@@ -122,14 +187,14 @@ function initAiCommentary() {
       };
       
       // Handle errors
-      activeStream.onerror = function(error) {
+      window.activeStream.onerror = function(error) {
         console.error('Stream error:', error);
         commentaryLoading.style.display = 'none';
         commentaryContent.textContent = 'Sorry, there was an error with the streaming connection. Please try again.';
         
         // Close the stream on error
-        activeStream.close();
-        activeStream = null;
+        window.activeStream.close();
+        window.activeStream = null;
       };
     }
     
