@@ -1,30 +1,70 @@
-<div id="<%= dom_id blog_post %>">
-  <p>
-    <strong>Title:</strong>
-    <%= blog_post.title %>
-  </p>
-
-  <p>
-    <strong>Content:</strong>
-  </p>
+<div id="<%= dom_id blog_post %>" class="blog-card" style="background-color: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.08); transition: transform 0.3s ease, box-shadow 0.3s ease; height: 100%; display: flex; flex-direction: column;">
   
-  <div class="markdown-content" id="content-<%= blog_post.id %>">
-    <%= blog_post.content %>
+  <!-- Featured Image -->
+  <div class="blog-card-image" style="height: 200px; overflow: hidden; position: relative; background-color: #f5f5f5;">
+    <% if blog_post&.image&.attached? %>
+      <%= image_tag blog_post.image, style: "width: 100%; height: 100%; object-fit: cover;" %>
+    <% else %>
+      <div style="display: flex; align-items: center; justify-content: center; height: 100%; color: #aaa;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" viewBox="0 0 16 16">
+          <path d="M6.002 5.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
+          <path d="M2.002 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2h-12zm12 1a1 1 0 0 1 1 1v6.5l-3.777-1.947a.5.5 0 0 0-.577.093l-3.71 3.71-2.66-1.772a.5.5 0 0 0-.63.062L1.002 12V3a1 1 0 0 1 1-1h12z"/>
+        </svg>
+      </div>
+    <% end %>
   </div>
   
-  <button type="button" id="view_in_stackedit_<%= blog_post.id %>" class="stackedit-view-button" data-content-id="content-<%= blog_post.id %>" style="margin-top: 10px; margin-bottom: 15px; padding: 8px 16px; background-color: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer;">
-    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-markdown" viewBox="0 0 16 16" style="vertical-align: text-bottom; margin-right: 5px;">
-      <path d="M14 3a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h12zM2 2a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H2z"/>
-      <path d="M9.146 8.146a.5.5 0 0 1 .708 0L11.5 9.793l1.646-1.647a.5.5 0 0 1 .708.708l-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 0 1 0-.708z"/>
-      <path d="M11.5 5a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-1 0v-4a.5.5 0 0 1 .5-.5z"/>
-    </svg>
-    View in StackEdit
-  </button>
-
-  <% if blog_post&.image&.attached? %>
-    <%= image_tag blog_post.image, width: 500, height: 500, style: "border-radius: 10px;" %>
-  <% else %>
-    <p>Generating AI Image...</p>
-  <% end %>
-
+  <!-- Card Content -->
+  <div class="blog-card-content" style="padding: 20px; flex-grow: 1; display: flex; flex-direction: column;">
+    <!-- Title -->
+    <h2 style="margin-top: 0; margin-bottom: 12px; font-size: 1.4rem; color: #333; line-height: 1.3;">
+      <%= blog_post.title %>
+    </h2>
+    
+    <!-- Date & Metadata -->
+    <div class="blog-meta" style="display: flex; align-items: center; margin-bottom: 15px; color: #777; font-size: 0.85rem;">
+      <span style="display: flex; align-items: center;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16" style="margin-right: 4px;">
+          <path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z"/>
+          <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0z"/>
+        </svg>
+        <%= blog_post.created_at.strftime("%B %d, %Y") %>
+      </span>
+    </div>
+    
+    <!-- Preview Content -->
+    <div class="blog-preview" style="margin-bottom: 20px; color: #555; font-size: 0.95rem; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; line-height: 1.5;">
+      <% preview_content = strip_tags(blog_post.content.to_s).truncate(150) %>
+      <%= preview_content %>
+    </div>
+    
+    <!-- Hidden Content for StackEdit -->
+    <div class="markdown-content" id="content-<%= blog_post.id %>" style="display: none;">
+      <%= blog_post.content %>
+    </div>
+    
+    <!-- Card Actions -->
+    <div class="blog-card-actions" style="margin-top: auto; display: flex; gap: 10px;">
+      <% if controller.action_name == 'index' %>
+        <%= link_to blog_post, style: "flex: 1; display: inline-flex; align-items: center; justify-content: center; background-color: #2196F3; color: white; padding: 8px 16px; text-decoration: none; border-radius: 6px; font-weight: 500; font-size: 0.9rem;" do %>
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16" style="margin-right: 6px;">
+            <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z"/>
+            <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8zm8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"/>
+          </svg>
+          View Post
+        <% end %>
+      <% end %>
+      
+      <% if controller.action_name == 'index' %>
+        <button type="button" id="view_in_markdown_<%= blog_post.id %>" class="markdown-preview-button" data-content-id="content-<%= blog_post.id %>" style="flex: 1; display: inline-flex; align-items: center; justify-content: center; background-color: #4CAF50; color: white; padding: 8px 16px; border: none; border-radius: 6px; cursor: pointer; font-weight: 500; font-size: 0.9rem;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-markdown" viewBox="0 0 16 16" style="margin-right: 6px;">
+            <path d="M14 3a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h12zM2 2a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H2z"/>
+            <path d="M9.146 8.146a.5.5 0 0 1 .708 0L11.5 9.793l1.646-1.647a.5.5 0 0 1 .708.708l-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 0 1 0-.708z"/>
+            <path d="M11.5 5a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-1 0v-4a.5.5 0 0 1 .5-.5z"/>
+          </svg>
+          Preview Markdown
+        </button>
+      <% end %>
+    </div>
+  </div>
 </div>
