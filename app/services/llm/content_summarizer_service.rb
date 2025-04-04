@@ -5,8 +5,8 @@ module Llm
       super(@api_key)
       @base_url = "https://api.openai.com/v1/chat/completions"
       @headers = {
-        'Content-Type' => 'application/json',
-        'Authorization' => "Bearer #{@api_key}"
+        "Content-Type" => "application/json",
+        "Authorization" => "Bearer #{@api_key}"
       }
     end
 
@@ -41,7 +41,7 @@ module Llm
     private
 
     def default_api_key
-      ENV['OPENAI_API_KEY']
+      ENV["OPENAI_API_KEY"]
     end
 
     def extract_summary(response)
@@ -59,4 +59,4 @@ module Llm
       raise ServiceError, "Invalid API response format"
     end
   end
-end 
+end

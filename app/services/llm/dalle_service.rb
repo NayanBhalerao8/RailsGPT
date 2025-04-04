@@ -1,18 +1,17 @@
-require 'httparty'
+require "httparty"
 module Llm
     class DalleService < BaseService
-  
       def initialize(api_key = nil)
         @api_key = api_key || default_api_key
         Rails.logger.info "🔍 DalleService API Key: #{api_key.inspect}"
         super(@api_key)  # Explicitly pass it to BaseService
         @base_url = "https://api.openai.com/v1/images/generations"
         @headers = {
-          'Content-Type' => 'application/json',
-          'Authorization' => "Bearer #{@api_key}" # Ensure header includes the API key
+          "Content-Type" => "application/json",
+          "Authorization" => "Bearer #{@api_key}" # Ensure header includes the API key
         }
       end
-  
+
       def generate_image(prompt, size = "1792x1024")
         body = {
           model: "dall-e-3",  # Use DALL·E 2 for the cheapest option
@@ -20,7 +19,7 @@ module Llm
           n: 1,
           size: size
         }
-  
+
         begin
           response = HTTParty.post(
             @base_url,
@@ -28,23 +27,23 @@ module Llm
             body: body.to_json,
             timeout: 60
           )
-  
+
           extract_image_url(response)
         rescue HTTParty::Error => e
           handle_http_error(e)
         end
       end
-  
+
       private
-  
+
       def default_api_key
-        ENV['OPENAI_API_KEY']
+        ENV["OPENAI_API_KEY"]
       end
-  
+
       def extract_image_url(response)
         parsed = JSON.parse(response.body)
         image_url = parsed.dig("data", 0, "url")
-  
+
         if image_url.present?
           image_url
         else
@@ -56,5 +55,4 @@ module Llm
         raise ServiceError, "Invalid API response format"
       end
     end
-  end
-  
+end
