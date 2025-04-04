@@ -57,6 +57,43 @@ class BlogPostsController < ApplicationController
     end
   end
 
+  # POST /blog_posts/generate_commentary
+  def generate_commentary
+    content = params.expect(:content)
+
+    commentary_service = Llm::ContentCommentaryService.new
+    commentary = commentary_service.generate_commentary(content)
+
+    render json: { commentary: commentary }
+  rescue ActionController::ParameterMissing => e
+    render json: { error: e.message }, status: :unprocessable_entity
+  end
+
+  # GET /blog_posts/stream_commentary
+  def stream_commentary
+    content = params.expect(:content)
+
+
+    response.headers["Content-Type"] = "text/event-stream"
+    response.headers["Cache-Control"] = "no-cache"
+    response.headers["Connection"] = "keep-alive"
+
+    # Create a new commentary service
+    commentary_service = Llm::ContentCommentaryService.new
+
+    # Start streaming the response
+    begin
+      commentary_service.generate_commentary_stream(content) do |chunk|
+        response.stream.write("data: #{chunk.to_json}\n\n")
+      end
+    rescue => e
+      response.stream.write("data: #{{ error: e.message }.to_json}\n\n")
+    ensure
+      response.stream.write("data: [DONE]\n\n")
+      response.stream.close
+    end
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_blog_post
