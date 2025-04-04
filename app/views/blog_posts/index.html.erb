@@ -1,16 +1,44 @@
-<p style="color: green"><%= notice %></p>
+<% content_for :title, "Blog Posts" %>
 
-<% content_for :title, "Blog posts" %>
-
-<h1>Blog posts</h1>
-
-<div id="blog_posts">
-  <% @blog_posts.each do |blog_post| %>
-    <%= render blog_post %>
-    <p>
-      <%= link_to "Show this blog post", blog_post %>
-    </p>
+<div class="blog-index-container" style="max-width: 1200px; margin: 0 auto; padding: 20px;">
+  <% if notice.present? %>
+    <div class="notice" style="background-color: #d4edda; color: #155724; padding: 12px 20px; border-radius: 6px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+      <%= notice %>
+    </div>
   <% end %>
-</div>
 
-<%= link_to "New blog post", new_blog_post_path %>
+  <header style="margin-bottom: 40px; border-bottom: 1px solid #eaeaea; padding-bottom: 20px;">
+    <h1 style="font-size: 2.5rem; color: #333; margin-bottom: 10px;">My Blog</h1>
+    <p style="color: #666; font-size: 1.1rem;">Thoughts, ideas, and explorations</p>
+  </header>
+
+  <div class="blog-actions" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+    <div class="blog-count" style="color: #666; font-size: 0.9rem;">
+      <%= pluralize(@blog_posts.count, 'post') %> in total
+    </div>
+    <%= link_to new_blog_post_path, style: "display: inline-flex; align-items: center; background-color: #4CAF50; color: white; padding: 10px 20px; text-decoration: none; border-radius: 6px; font-weight: 500; box-shadow: 0 2px 4px rgba(0,0,0,0.1); transition: all 0.2s ease;" do %>
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16" style="margin-right: 8px;">
+        <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+      </svg>
+      Create New Post
+    <% end %>
+  </div>
+
+  <div id="blog_posts" class="blog-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 30px;">
+    <% if @blog_posts.any? %>
+      <% @blog_posts.each do |blog_post| %>
+        <%= render blog_post %>
+      <% end %>
+    <% else %>
+      <div class="empty-state" style="grid-column: 1 / -1; text-align: center; padding: 60px 20px; background-color: #f9f9f9; border-radius: 8px;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="#aaa" viewBox="0 0 16 16" style="margin-bottom: 20px;">
+          <path d="M14.5 3a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h13zm-13-1A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2h-13z"/>
+          <path d="M3 5.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zM3 8a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9A.5.5 0 0 1 3 8zm0 2.5a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5z"/>
+        </svg>
+        <h3 style="color: #555; margin-bottom: 10px;">No blog posts yet</h3>
+        <p style="color: #777; margin-bottom: 20px;">Get started by creating your first blog post</p>
+        <%= link_to "Create your first post", new_blog_post_path, style: "display: inline-block; background-color: #4CAF50; color: white; padding: 10px 20px; text-decoration: none; border-radius: 6px; font-weight: 500;" %>
+      </div>
+    <% end %>
+  </div>
+</div>
