@@ -1,18 +1,26 @@
-<div id="<%= dom_id blog_post %>">
-  <p>
-    <strong>Title:</strong>
-    <%= blog_post.title %>
-  </p>
+<div id="<%= dom_id blog_post %>" class="blog-card">
+  <div class="blog-card-content">
+    <h2 class="blog-card-title"><%= blog_post.title %></h2>
+    
+    <div class="blog-card-text">
+      <%= blog_post.content %>
+    </div>
 
-  <p>
-    <strong>Content:</strong>
-    <%= blog_post.content %>
-  </p>
+    <% if blog_post.image.attached? %>
+      <div class="blog-card-image-container">
+        <%= image_tag blog_post.image, class: "blog-card-image" %>
+      </div>
+    <% else %>
+      <div class="loading-indicator">
+        <p>Generating AI Image...</p>
+      </div>
+    <% end %>
 
-  <% if blog_post&.image&.attached? %>
-    <%= image_tag blog_post.image, width: 500, height: 500, style: "border-radius: 10px;" %>
-  <% else %>
-    <p>Generating AI Image...</p>
-  <% end %>
-
+    <div class="blog-actions">
+      <%= link_to "Edit", edit_blog_post_path(blog_post), class: "btn btn-primary" %>
+      <%= link_to "Delete", blog_post, 
+          data: { turbo_method: :delete, turbo_confirm: "Are you sure?" }, 
+          class: "btn btn-secondary" %>
+    </div>
+  </div>
 </div>

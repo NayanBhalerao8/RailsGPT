@@ -1,16 +1,28 @@
-<p style="color: green"><%= notice %></p>
-
-<% content_for :title, "Blog posts" %>
-
-<h1>Blog posts</h1>
-
-<div id="blog_posts">
-  <% @blog_posts.each do |blog_post| %>
-    <%= render blog_post %>
-    <p>
-      <%= link_to "Show this blog post", blog_post %>
-    </p>
+<div class="blog-container">
+  <% if notice.present? %>
+    <div class="notice"><%= notice %></div>
   <% end %>
-</div>
 
-<%= link_to "New blog post", new_blog_post_path %>
+  <div class="blog-header">
+    <h1 class="blog-title">Blog Posts</h1>
+    <%= link_to "New Blog Post", new_blog_post_path, class: "btn btn-primary" %>
+  </div>
+
+  <div class="blog-grid">
+    <% @blog_posts.each do |blog_post| %>
+      <div class="blog-card">
+        <% if blog_post.image.attached? %>
+          <%= image_tag blog_post.image, class: "blog-card-image" %>
+        <% end %>
+        <div class="blog-card-content">
+          <h2 class="blog-card-title"><%= blog_post.title %></h2>
+          <p class="blog-card-text"><%= truncate(blog_post.content, length: 150) %></p>
+          <div class="blog-actions">
+            <%= link_to "Read More", blog_post, class: "btn btn-primary" %>
+            <%= link_to "Edit", edit_blog_post_path(blog_post), class: "btn btn-secondary" %>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>

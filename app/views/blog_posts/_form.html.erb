@@ -1,8 +1,7 @@
-<%= form_with(model: blog_post) do |form| %>
+<%= form_with(model: blog_post, class: "blog-form") do |form| %>
   <% if blog_post.errors.any? %>
-    <div style="color: red">
-      <h2><%= pluralize(blog_post.errors.count, "error") %> prohibited this blog_post from being saved:</h2>
-
+    <div class="error-message">
+      <h2><%= pluralize(blog_post.errors.count, "error") %> prohibited this blog post from being saved:</h2>
       <ul>
         <% blog_post.errors.each do |error| %>
           <li><%= error.full_message %></li>
@@ -11,14 +10,14 @@
     </div>
   <% end %>
 
-  <div>
-    <%= form.label :title, style: "display: block" %>
-    <%= form.text_field :title %>
+  <div class="form-group">
+    <%= form.label :title, class: "form-label" %>
+    <%= form.text_field :title, class: "form-control" %>
   </div>
 
-  <div>
-    <%= form.label :content, style: "display: block" %>
-    <%= form.text_area :content, style: "width: 100%; height: 200px;" %>
+  <div class="form-group">
+    <%= form.label :content, class: "form-label" %>
+    <%= form.text_area :content, class: "form-control", style: "min-height: 300px; white-space: pre-wrap;" %>
   </div>
 
   <div>
@@ -26,7 +25,7 @@
     <%#= form.file_field :image %>
   </div>
 
-  <div>
-    <%= form.submit %>
+  <div class="form-group">
+    <%= form.submit class: "btn btn-primary" %>
   </div>
 <% end %>

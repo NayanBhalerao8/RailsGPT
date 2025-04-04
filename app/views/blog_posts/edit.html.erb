@@ -1,12 +1,13 @@
 <% content_for :title, "Editing blog post" %>
 
-<h1>Editing blog post</h1>
+<div class="blog-post-full">
+  <div class="blog-header">
+    <h1 class="blog-title">Editing Blog Post</h1>
+    <div class="blog-actions">
+      <%= link_to "Show post", @blog_post, class: "btn btn-primary" %>
+      <%= link_to "Back to posts", blog_posts_path, class: "btn btn-secondary" %>
+    </div>
+  </div>
 
-<%= render "form", blog_post: @blog_post %>
-
-<br>
-
-<div>
-  <%= link_to "Show this blog post", @blog_post %> |
-  <%= link_to "Back to blog posts", blog_posts_path %>
+  <%= render "form", blog_post: @blog_post %>
 </div>
